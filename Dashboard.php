@@ -160,12 +160,11 @@
 </style>
 <html>
   <body>
-
 <!-- Dashboard Table -->
  <div id="wrapper">
   <h1>Dashboard</h1>
 
-  <table id="keywords" cellspacing="0" cellpadding="0">
+  <!-- <table id="keywords" cellspacing="0" cellpadding="0">
     <thead>
       <tr>
         <th><span>Original File</span></th>
@@ -219,58 +218,48 @@
         <td>EPIDEMIA</td>
       </tr>
     </tbody>
-  </table>
+  </table> -->
  </div>
 
 <!-- File Upload  -->
   <form enctype="multipart/form-data" method="post" role="form" name="import">
-      <div>
           <li><label for="exampleInputFile">File Upload</label></li>
           <input type="file" class="myButton" name="file" id="file">
-          <p>Only Excel.</p>
+          <p>Only Excel</p>
           <!-- <a href="#" class="myButton">light grey</a> -->
-      </div>
-      <button type="submit" class="myButton" name="Import" value="Upload">Upload</button>
+      <input type="submit" class="myButton" name="submit" value="submit"/>
   </form>
-</body>
 
 <!-- Import File to Mysql -->
-  <?php
+<?php
+include ("connect.php");
+if(isset($_POST["submit"]))
+  {
 
-  if(isset($_POST["submit"]))
-  	{
-      $hostname = "localhost";
-    	$username = "root";
-    	$password = "dbsgur123";
-    	$database = "epidemia_test";
-    	$conn = mysql_connect($hostname,$username,$password) or die(mysql_error());
-    	mysql_select_db($database, $conn) or die(mysql_error());
+    $file = $_FILES["file"]["tmp_name"];
+    $handle = fopen($file, "r");
+    $c = 0;
+    while(($filesop = fgetcsv($handle, 10000, ",")) !== false)
+    {
+      $id = $filesop[0];
+      $var_name = $filesop[1];
+      $woreda_name = $filesop[2];
+      $WID = $filesop[3];
+      $Date_h = $filesop[4];
+      $obs_value = $filesop[5];
+      $anom = $filesop[6];
+      $stand_anom = $filesop[7];
 
-  		echo $file = $_FILES["file"]["tmp_name"];
-  		$handle = fopen($file, "r");
-  		$c = 0;
-  		while(($filesop = fgetcsv($handle, 10000, ",")) !== false)
-  		{
-  			$id = $filesop[0];
-  			$var_name = $filesop[1];
-        $woreda_name = $filesop[2];
-        $WID = $filesop[3];
-        $Date = $filesop[4];
-        $obs_value = $filesop[5];
-        $anom = $filesop[6];
-        $stand_anom = $filesop[7];
-
-  			$sql = mysql_query("INSERT INTO epidemia (id, var_name, woreda_name, WID, `Date`, obs_value, anom, stand_anom) VALUES ('$id','$var_name','$woreda_name','$WID','$Date','$obs_value','$anom','$stand_anom')");
-  			$c = $c + 1;
-        mysql_query($sql);
-
-  		}
-  			if($sql) {
-  				echo "You database has imported successfully. You have inserted ". $c ." recoreds";
-  			} else {
-  				echo "Sorry! There is some problem.";
-  			}
-  	}
-  ?>
+     $sql = mysql_query("INSERT INTO epidemia_v2 (id, var_name, woreda_name, WID, Date_h, obs_value, anom, stand_anom) VALUES ('$id','$var_name','$woreda_name','$WID','$Date_h','$obs_value','$anom','$stand_anom')");
+      $c = $c + 1;
+    }
+      if($sql) {
+        echo "You database has imported successfully. You have inserted ". $c ." recoreds";
+      } else {
+        echo "Sorry! There is some problem.";
+      }
+    }
+?>
+</body>
 </html>
 <!--MySQL안에다가 엑셀파일 넣는것이 되지 않음. 그거 해결 하기!  -->
