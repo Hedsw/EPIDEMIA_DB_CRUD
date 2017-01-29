@@ -117,47 +117,46 @@
       #keywords tbody tr td.lalign {
         text-align: left;
       }
-  .myButton {
-	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	box-shadow:inset 0px 1px 0px 0px #ffffff;
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
-	background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
-	background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
-	background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
-	background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
-	background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
-	background-color:#f9f9f9;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	border:1px solid #ffffff;
-	display:inline-block;
-	cursor:pointer;
-	color:#666666;
-	font-family:Arial;
-	font-size:15px;
-	font-weight:bold;
-	padding:6px 24px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #ffffff;
-}
-.myButton:hover {
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
-	background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
-	background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
-	background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
-	background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
-	background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
-	background-color:#e9e9e9;
-}
-.myButton:active {
-	position:relative;
-	top:1px;
-}
-
+      .myButton {
+    	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    	box-shadow:inset 0px 1px 0px 0px #ffffff;
+    	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9));
+    	background:-moz-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    	background:-webkit-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    	background:-o-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    	background:-ms-linear-gradient(top, #f9f9f9 5%, #e9e9e9 100%);
+    	background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
+    	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e9e9e9',GradientType=0);
+    	background-color:#f9f9f9;
+    	-moz-border-radius:6px;
+    	-webkit-border-radius:6px;
+    	border-radius:6px;
+    	border:1px solid #ffffff;
+    	display:inline-block;
+    	cursor:pointer;
+    	color:#666666;
+    	font-family:Arial;
+    	font-size:15px;
+    	font-weight:bold;
+    	padding:6px 24px;
+    	text-decoration:none;
+    	text-shadow:0px 1px 0px #ffffff;
+      }
+    .myButton:hover {
+    	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #e9e9e9), color-stop(1, #f9f9f9));
+    	background:-moz-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    	background:-webkit-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    	background:-o-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    	background:-ms-linear-gradient(top, #e9e9e9 5%, #f9f9f9 100%);
+    	background:linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%);
+    	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9e9e9', endColorstr='#f9f9f9',GradientType=0);
+    	background-color:#e9e9e9;
+    }
+    .myButton:active {
+    	position:relative;
+    	top:1px;
+    }
 </style>
 <html>
   <body>
@@ -228,7 +227,7 @@
       <div>
           <li><label for="exampleInputFile">File Upload</label></li>
           <input type="file" class="myButton" name="file" id="file">
-          <p c>Only Excel.</p>
+          <p>Only Excel.</p>
           <!-- <a href="#" class="myButton">light grey</a> -->
       </div>
       <button type="submit" class="myButton" name="Import" value="Upload">Upload</button>
@@ -237,19 +236,20 @@
 
 <!-- Import File to Mysql -->
   <?php
-	$hostname = "localhost";
-	$username = "root";
-	$password = "dbsgur123";
-	$database = "epidemia_test";
-	$conn = mysql_connect("$hostname","$username","$password") or die(mysql_error());
-	mysql_select_db("$database", $conn) or die(mysql_error());
 
   if(isset($_POST["submit"]))
   	{
-  		$file = $_FILES['file']['tmp_name'];
+      $hostname = "localhost";
+    	$username = "root";
+    	$password = "dbsgur123";
+    	$database = "epidemia_test";
+    	$conn = mysql_connect($hostname,$username,$password) or die(mysql_error());
+    	mysql_select_db($database, $conn) or die(mysql_error());
+
+  		echo $file = $_FILES["file"]["tmp_name"];
   		$handle = fopen($file, "r");
   		$c = 0;
-  		while(($filesop = fgetcsv($handle, 1000, ",")) !== false)
+  		while(($filesop = fgetcsv($handle, 10000, ",")) !== false)
   		{
   			$id = $filesop[0];
   			$var_name = $filesop[1];
@@ -260,8 +260,10 @@
         $anom = $filesop[6];
         $stand_anom = $filesop[7];
 
-  			$sql = mysql_query("INSERT INTO csv (id, var_name, woreda_name, WID, `Date`, obs_value, anom, stand_anom) VALUES ('$id','$var_name','$woreda_name','$WID','$Date','$obs_value','$anom','$stand_anom')");
+  			$sql = mysql_query("INSERT INTO epidemia (id, var_name, woreda_name, WID, `Date`, obs_value, anom, stand_anom) VALUES ('$id','$var_name','$woreda_name','$WID','$Date','$obs_value','$anom','$stand_anom')");
   			$c = $c + 1;
+        mysql_query($sql);
+
   		}
   			if($sql) {
   				echo "You database has imported successfully. You have inserted ". $c ." recoreds";
