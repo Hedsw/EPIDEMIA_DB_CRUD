@@ -1,3 +1,10 @@
+<!--
+mysql실행법 cd /usr/local/mysql/bin 으로 들어가서
+./mysql -uroot -p
+그러고 나면..
+패스워드 묻는데 아래꺼 입력
+
+Password: dbsgur123 -->
 <!DOCTYPE html>
 <style>
         @import url('http://fonts.googleapis.com/css?family=Amarante');
@@ -163,7 +170,6 @@
 <!-- Dashboard Table -->
  <div id="wrapper">
   <h1>Dashboard</h1>
-
   <!-- <table id="keywords" cellspacing="0" cellpadding="0">
     <thead>
       <tr>
@@ -222,7 +228,7 @@
  </div>
 
 <!-- File Upload  -->
-  <form enctype="multipart/form-data" method="post" role="form" name="import">
+  <form enctype="multipart/form-data" action="action.php" method="post" role="form" name="import">
           <li><label for="exampleInputFile">File Upload</label></li>
           <input type="file" class="myButton" name="file" id="file">
           <p>Only Excel</p>
@@ -231,35 +237,7 @@
   </form>
 
 <!-- Import File to Mysql -->
-<?php
-include ("connect.php");
-if(isset($_POST["submit"]))
-  {
 
-    $file = $_FILES["file"]["tmp_name"];
-    $handle = fopen($file, "r");
-    $c = 0;
-    while(($filesop = fgetcsv($handle, 10000, ",")) !== false)
-    {
-      $id = $filesop[0];
-      $var_name = $filesop[1];
-      $woreda_name = $filesop[2];
-      $WID = $filesop[3];
-      $Date_h = $filesop[4];
-      $obs_value = $filesop[5];
-      $anom = $filesop[6];
-      $stand_anom = $filesop[7];
-
-     $sql = mysql_query("INSERT INTO epidemia_v2 (id, var_name, woreda_name, WID, Date_h, obs_value, anom, stand_anom) VALUES ('$id','$var_name','$woreda_name','$WID','$Date_h','$obs_value','$anom','$stand_anom')");
-      $c = $c + 1;
-    }
-      if($sql) {
-        echo "You database has imported successfully. You have inserted ". $c ." recoreds";
-      } else {
-        echo "Sorry! There is some problem.";
-      }
-    }
-?>
 </body>
 </html>
 <!--MySQL안에다가 엑셀파일 넣는것이 되지 않음. 그거 해결 하기!  -->
