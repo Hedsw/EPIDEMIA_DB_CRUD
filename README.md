@@ -1,5 +1,6 @@
-# EPIDEMIA_DB_CRUD
-In the Epidemia project, The dashboard that upload excel file and check data duplicate.
-Also, Some of info should be showed.
+## EPIDEMIA_Project
+==============
 
-It's used Mysql with PHP for CRUD.
+This project is that collaborate with NASA, SDSU and Ethiopia Gov.
+The goal of this project is to decrease rate of illness related in mosquito.
+My Position is that develop Web App and struct Database as using RDBMS(MySQL)
