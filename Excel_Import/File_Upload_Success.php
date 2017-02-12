@@ -1,13 +1,14 @@
-<!-- Putty 접속하는법
-ssh leey@kabru.sdstated.edu
+<!--
+FileLee3 테이블 안에 저장 시켜 놨음.. 파일 저장 가능함..
+아래의 SQL문으로 만들수 있음
+select * from FileLee3;
 
-접속 비밀번호 yunhyeokLEE!
 
-mysql -u epidemiaweb_test -p epidemia_test
-
-Mysql password : eishoo6Pheis
- -->
-
+//이거는 엑셀 파일 MYSQL에 업로드 시킬 수 있게 만들어 주는거
+CREATE TABLE IF NOT EXISTS `FileLee3` (
+`ID` int(11) NOT NULL AUTO_INCREMENT,
+`FileName` varchar(30) NOT NULL, PRIMARY KEY (`ID`) ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=51 ;
+-->
 <!DOCTYPE html>
 <style>
         @import url('http://fonts.googleapis.com/css?family=Amarante');
@@ -204,106 +205,56 @@ Mysql password : eishoo6Pheis
         $file_size = $_FILES["file"]["size"];
         $file_dir = $_FILES["file"]['tmp_name'];
 
+
         if(empty($file_excel)) {
           $errMSG =  "Please Select Excel File";
         }
         else {
-        $c = 0;
-        if(!isset($errMSG)) {
-           $handle = fopen($file_dir,"r");
-              //File Upload Start
-            try {
-              $upload_dir = 'user_images/';
-              $ExcelExt = strtolower(pathinfo($file_excel,PATHINFO_EXTENSION)); // get Excel Extension
-              $valid_extensions = array('xls','csv','xlsx'); //valid extension
-              $userExcel = rand(1000,10000000).".".$ExcelExt;
-              if(in_array($ExcelExt,$valid_extensions)) {
-                  if($file_size < 50000000) {
-                    move_uploaded_file($file_dir,$upload_dir.$userExcel);
-                  }
-                  else {
-                    $errMSG = "Sorry, your file is too large it should be less then 50MB";
-                  }
-              }
-              else {
-                    $errMSG = "Uploaded file is empty";
-              }
-              if(!isset($errMSG))
-              {
-                $stmt = $conn->prepare("INSERT INTO FileLee (FileName) VALUES('$file_excel')");
-                $stmt->bindParam('$file_excel',$file_excel);
-                if($stmt->execute())
-                   {
-                    $successMSG = "new record succesfully inserted ...";
-                   }
-                else
-                  {
-                    $errMSG = "error while inserting....";
-                  }
-              }//  if(!isset($errMSG))
-            }
-           catch(PDOException $e) {
-             echo "File Upload failed: ";
+          //$upload_dir <--- 이거 에러 떳다.. 이거 고쳐야함
+         $upload_dir = 'user_images/';
+         $ExcelExt = strtolower(pathinfo($file_excel,PATHINFO_EXTENSION)); // get Excel Extension
+         $valid_extensions = array('xls','csv','xlsx'); //valid extension
+
+         $userExcel = rand(1000,10000000).".".$ExcelExt;
+
+         if(in_array($ExcelExt,$valid_extensions)) {
+             if($file_size < 50000000) {
+               move_uploaded_file($file_dir,$upload_dir.$userExcel);
              }
-             //File Upload
+             else {
+               $errMSG = "Sorry, your file is too large it should be less then 50MB";
+             }
+         }
+         else {
+               $errMSG = "Uploaded file is empty";
+         }
 
-             //Excel Data insert into MySQL
-             try {
-                if($handle !==FALSE) {
-                  while(($filesop = fgetcsv($handle,10000,','))!==FALSE) {
-                      $id = $filesop[0];
-                      $name = $filesop[1];
-                      $population = $filesop[2];
-                      $pop_density = $filesop[3];
-                      $country = $filesop[4];
-                      $latitude = $filesop[5];
-                      $longitude = $filesop[6];
-                      echo $id;
-                      $stmt = $conn->prepare("INSERT INTO Data (ID,name,population,pop_density,country,latitude,longitude) VALUES ('$id','$name','$population','$pop_density','$country','$latitude','$longitude')");
-                      $c = $c + 1;
-                      $stmt->execute($filesop);
-                  }
-                }
-                else {
-                  echo "Insert part is problem";
-                }
-                fclose($handle);
-                $stmt->close();
-                $conn->close();
-              } //try
-             catch(PDOException $e) {
-               echo "Error occured";
-                  die($e->getMessage());
+        $c = 0;
+
+        if(!isset($errMSG))
+        {
+          $stmt = $conn->prepare("INSERT INTO FileLee3 (FileName) VALUES('$file_excel')");
+          $stmt->bindParam('$file_excel',$file_excel);
+          if($stmt->execute())
+             {
+              $successMSG = "new record succesfully inserted ...";
+             }
+          else
+            {
+              $errMSG = "error while inserting....";
             }
-             //Excel Data insert End..!
-
-           }
-        }//else
-      }//try
+        }//  if(!isset($errMSG))
+      }//else
+    }//try
       catch(PDOException $e) {
           echo "File Upload failed: ";
       }
       $conn = null;
     }//$_post['submit']
+    else {
+      echo " Still not Connected";
+    }
 ?>
-<!-- Import File to Mysql -->
 </body>
 </html>
-
-<!-- // This is to upload File into DB
-CREATE TABLE IF NOT EXISTS `FileLee` (
-`ID` int(11) NOT NULL AUTO_INCREMENT,
-`FileName` VARCHAR(30) NOT NULL,
- PRIMARY KEY (`ID`) ) ;
-
-
-// This is to upload each column data into mySQL
-CREATE TABLE IF NOT EXISTS `Data` (
-`ID` int(11) NOT NULL,
-`name` VARCHAR(30) NOT NULL,
-`population` int(20) NOT NULL,
-`pop_density` int(20) NOT NULL,
-`country` VARCHAR(20) NOT NULL,
-`latitude` FLOAT(20) NOT NULL,
-`longitude` FLOAT(20) NOT NULL,
-PRIMARY KEY (`ID`) ); -->
+<!--MySQL안에다가 엑셀파일 넣는것이 되지 않음. 그거 해결 하기!  -->

@@ -4,7 +4,7 @@
 include ("connect.php");
 if(isset($_POST["submit"]))
   {
-    $file = $_FILES["file"]["tmp_name"];
+    $file = $_FILES["files"]["tmp_name"];
     $handle = fopen($file, "r");
     $c = 0;
     while(($filesop = fgetcsv($handle, 10000, ",")) !== false)
