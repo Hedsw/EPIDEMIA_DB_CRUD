@@ -115,74 +115,7 @@ Mysql password : eishoo6Pheis
 <html>
   <body>
 <!-- Dashboard Table -->
- <div id="wrapper">
   <h1>Dashboard</h1>
-  <table id="keywords" cellspacing="0" cellpadding="0">
-    <thead>
-      <tr>
-        <th><span>Original File</span></th>
-        <th><span>Rows Uploaded</span></th>
-        <th><span>Rows in Use</span></th>
-        <th><span>Upload Time</span></th>
-        <th><span>User</span></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="lalign">Excel File1</td>
-        <td>6,000</td>
-        <td>110</td>
-        <td>4-21-2016</td>
-        <td>22.2</td>
-      </tr>
-      <tr>
-        <td class="lalign">Excel File2</td>
-        <td>2,200</td>
-        <td>500</td>
-        <td>01-21-2017</td>
-        <td>EPIDEMIA</td>
-      </tr>
-      <tr>
-        <td class="lalign">Excel File3</td>
-        <td>13,500</td>
-        <td>900</td>
-        <td>01-21-2011</td>
-        <td>EPIDEMIA</td>
-      </tr>
-      <tr>
-        <td class="lalign">Excel File4</td>
-        <td>8,700</td>
-        <td>350</td>
-        <td>01-21-2016</td>
-        <td>EPIDEMIA</td>
-      </tr>
-      <tr>
-        <td class="lalign">Excel File5</td>
-        <td>9,900</td>
-        <td>460</td>
-        <td>01-21-2017</td>
-        <td>EPIDEMIA</td>
-      </tr>
-      <tr>
-        <td class="lalign">Excel File6</td>
-        <td>10,500</td>
-        <td>748</td>
-        <td>01-22-2017</td>
-        <td>EPIDEMIA</td>
-      </tr>
-    </tbody>
-  </table>
- </div>
-
-
-<!-- File Upload  -->
-  <form enctype="multipart/form-data" action="" method="post" role="form" name="import">
-          <li><label for="exampleInputFile">File Upload</label></li>
-          <input type="file" class="myButton" name="file" id="file">
-          <p>Only Excel</p>
-          <!-- <a href="#" class="myButton">light grey</a> -->
-      <input type="submit" class="myButton" name="submit" value="submit"/>
-  </form>
 <!--PDO로 연결하기 -->
   <?php
 
@@ -232,14 +165,16 @@ Mysql password : eishoo6Pheis
               {
                 $stmt = $conn->prepare("INSERT INTO FileLee (FileName) VALUES('$file_excel')");
                 $stmt->bindParam('$file_excel',$file_excel);
-                if($stmt->execute())
-                   {
-                    $successMSG = "new record succesfully inserted ...";
-                   }
-                else
+
+               if($stmt->execute())
                   {
-                    $errMSG = "error while inserting....";
+                   $successMSG = "new record succesfully inserted ...";
                   }
+               else
+                 {
+                   $errMSG = "error while inserting....";
+                 }
+
               }//  if(!isset($errMSG))
             }
            catch(PDOException $e) {
@@ -267,6 +202,7 @@ Mysql password : eishoo6Pheis
                 else {
                   echo "Insert part is problem";
                 }
+
                 fclose($handle);
                 $stmt->close();
                 $conn->close();
@@ -276,7 +212,6 @@ Mysql password : eishoo6Pheis
                   die($e->getMessage());
             }
              //Excel Data insert End..!
-
            }
         }//else
       }//try
@@ -286,10 +221,62 @@ Mysql password : eishoo6Pheis
       $conn = null;
     }//$_post['submit']
 ?>
-<!-- Import File to Mysql -->
+
+<!-- Show Files in Here :) -->
+<?php
+//Show Files in Here :)
+try{
+    $stmt = $conn->prepare("SELECT * FROM FileLee ORDER BY ID DESC");
+    $stmt->execute();
+    $result = $stmt->fetchAll();
+}
+catch(PDOException $e) {
+  echo "Error occured";
+     die($e->getMessage());
+}
+// Show File End;
+?>
+<table>
+  <thead>
+    <tr>
+      <th>FileNum  </th>
+      <th>FileName  </th>
+      <th>Data</th>
+      <tbody>
+        <?php
+        if(!empty($result)) {
+          foreach($result as $row) {
+         ?>
+         <tr>
+            <td><?php echo $row["ID"]; ?>  </td>
+            <td><?php echo $row["FileName"]; ?>  </td>
+         </tr>
+         <?php
+       }
+     }
+     ?>
+      </tbody>
+    </tr>
+  </thead>
+</table>
+
+
+<!-- File Upload  -->
+  <form enctype="multipart/form-data" action="" method="post" role="form" name="import">
+          <li><label for="exampleInputFile">File Upload</label></li>
+          <input type="file" class="myButton" name="file" id="file">
+          <p>Only Excel</p>
+          <!-- <a href="#" class="myButton">light grey</a> -->
+      <input type="submit" class="myButton" name="submit" value="submit"/>
+  </form>
+
 </body>
 </html>
-
+<!--
+추가 해야 할 것
+1. Create Table하는거 해서 넣을 때 마다 테이블 만들어서 넣도록 해야함.
+2. 디비에 받아 놓은거 다시 뿌리는 법
+ -->
 <!-- // This is to upload File into DB
 CREATE TABLE IF NOT EXISTS `FileLee` (
 `ID` int(11) NOT NULL AUTO_INCREMENT,

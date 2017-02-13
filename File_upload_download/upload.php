@@ -33,10 +33,10 @@ if(isset($_POST['submit'])) {
     </form>
   </body>
 </html>
-
+<!--
 CREATE TABLE FileLee (
   ID int(11) NOT NULL,
   name varchar(100) NOT NULL,
   path varchar(400) NOT NULL,
   PRIMARY KEY (ID)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8; -->
