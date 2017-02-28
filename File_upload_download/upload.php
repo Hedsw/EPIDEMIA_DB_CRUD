@@ -24,19 +24,17 @@ if(isset($_POST['submit'])) {
   </head>
   <body>
     <form  action="upload.php" method="post" enctype="multipart/form-data">
-
         <label>Document Name</label>
         <input type="text" name="doc_name">
         <input type="file" name="myfile">
         <input type="submit" name="submit" value="Upload">
-
     </form>
   </body>
 </html>
 <!--
-CREATE TABLE FileLee (
-  ID int(11) NOT NULL,
-  name varchar(100) NOT NULL,
+CREATE TABLE FilesEpi (
+  ID int NOT NULL AUTO_INCREMENT,
+  FileName varchar(100) NOT NULL,
   path varchar(400) NOT NULL,
   PRIMARY KEY (ID)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8; -->
+); -->

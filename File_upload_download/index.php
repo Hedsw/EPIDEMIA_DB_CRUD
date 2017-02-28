@@ -19,16 +19,12 @@ $res = mysqli_query($con, "SELECT * FROM File");
       <br>
       <br>
       <?php
-
         while($row = mysqli_fetch_array($res,MYSQLI_ASSOC)){
-
           $id = $row['ID'];
           $name = $row['name'];
           $path = $row['path'];
-
           echo "Number -".$id. " Name -" . $name . " || Click to download ->". "<a href='download.php?dow=$path'>Download</a><br><br>";
         }
-
        ?>
 
   </body>

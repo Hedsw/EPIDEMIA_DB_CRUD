@@ -1,10 +1,7 @@
 <!-- Putty 접속하는법
 ssh leey@kabru.sdstated.edu
-
 접속 비밀번호 yunhyeokLEE!
-
 mysql -u epidemiaweb_test -p epidemia_test
-
 Mysql password : eishoo6Pheis
  -->
 
@@ -118,70 +115,77 @@ Mysql password : eishoo6Pheis
   <h1>Dashboard</h1>
 <!--PDO로 연결하기 -->
   <?php
-
     $servername = "localhost";
     $username = "epidemiaweb_test";
     $password = "eishoo6Pheis";
     try {
         $conn = new PDO("mysql:host=$servername;dbname=epidemia_test", $username, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        echo "Connected successfully";
       }
       catch(PDOException $e) {
-          echo $e->getMessage();
+          echo "Error";
       }
 
     if(isset($_POST['submit'])) {
       try {
-        $file_excel = $_FILES["file"]["name"];
+        $file_name = $_FILES["file"]["name"];
         $file_size = $_FILES["file"]["size"];
-        $file_dir = $_FILES["file"]['tmp_name'];
-
-        if(empty($file_excel)) {
+        $file_tmp = $_FILES["file"]['tmp_name'];
+        $file_type= $_FILES["file"]['type'];
+        if(empty($file_name)) {
           $errMSG =  "Please Select Excel File";
         }
         else {
+          echo $file_name;
+          echo $file_tmp;
         $c = 0;
         if(!isset($errMSG)) {
-           $handle = fopen($file_dir,"r");
+           $handle = fopen($file_tmp,"r");
               //File Upload Start
-            try {
-              $upload_dir = 'user_images/';
-              $ExcelExt = strtolower(pathinfo($file_excel,PATHINFO_EXTENSION)); // get Excel Extension
-              $valid_extensions = array('xls','csv','xlsx'); //valid extension
-              $userExcel = rand(1000,10000000).".".$ExcelExt;
-              if(in_array($ExcelExt,$valid_extensions)) {
-                  if($file_size < 50000000) {
-                    move_uploaded_file($file_dir,$upload_dir.$userExcel);
-                  }
-                  else {
-                    $errMSG = "Sorry, your file is too large it should be less then 50MB";
-                  }
-              }
-              else {
-                    $errMSG = "Uploaded file is empty";
-              }
-              if(!isset($errMSG))
-              {
-                $stmt = $conn->prepare("INSERT INTO FileLee (FileName) VALUES('$file_excel')");
-                $stmt->bindParam('$file_excel',$file_excel);
-
-               if($stmt->execute())
-                  {
-                   $successMSG = "new record succesfully inserted ...";
-                  }
-               else
-                 {
-                   $errMSG = "error while inserting....";
-                 }
-
-              }//  if(!isset($errMSG))
+          try {
+            $upload_dir = $_SERVER['DOCUMENT_ROOT']."/home/leey/data/";
+            // $upload_dir = "home/leey/data";
+            $location = "home/leey/data/";
+            $location2 = $location . basename($_FILES["file"]["name"]);
+            $ExcelExt = strtolower(pathinfo($file_name,PATHINFO_EXTENSION)); // get Excel Extension
+            $valid_extensions = array('xls','csv','xlsx'); //valid extension
+            $userExcel = rand(1000,10000000).".".$ExcelExt;
+            if(in_array($ExcelExt,$valid_extensions)) {
+                if($file_size < 50000000) {
+            $moved = move_uploaded_file($file_tmp,$location2);
+            if($moved) {
+              echo "Successfuly move_uploaded_file";
             }
+            else {
+              echo "Not uploaded because of error #".$_FILES["file"]["error"];
+            }
+          }
+          else {
+            $errMSG = "Sorry, your file is too large it should be less then 50MB";
+          }
+            }
+            else {
+                  $errMSG = "Uploaded file is empty";
+            }
+            if(!isset($errMSG))
+            {
+              $stmt = $conn->prepare("INSERT INTO FilesEpi (fileName, path) VALUES ('$file_name','$location')");
+              $stmt->bindParam('$file_name',$file_name);
+
+             if($stmt->execute())
+                {
+                 $successMSG = "new record succesfully inserted ...";
+                }
+             else
+               {
+                 $errMSG = "error while inserting....";
+               }
+            }//  if(!isset($errMSG))
+          }
            catch(PDOException $e) {
              echo "File Upload failed: ";
-             }
+           }
              //File Upload
-
              //Excel Data insert into MySQL
              try {
                 if($handle !==FALSE) {
@@ -193,25 +197,21 @@ Mysql password : eishoo6Pheis
                       $country = $filesop[4];
                       $latitude = $filesop[5];
                       $longitude = $filesop[6];
-                      echo $id;
+
                       $stmt = $conn->prepare("INSERT INTO Data (ID,name,population,pop_density,country,latitude,longitude) VALUES ('$id','$name','$population','$pop_density','$country','$latitude','$longitude')");
-                      $c = $c + 1;
                       $stmt->execute($filesop);
                   }
                 }
                 else {
                   echo "Insert part is problem";
                 }
-
                 fclose($handle);
-                $stmt->close();
-                $conn->close();
+                $stmt = null;
+                $conn = null;
               } //try
              catch(PDOException $e) {
                echo "Error occured";
-                  die($e->getMessage());
-            }
-             //Excel Data insert End..!
+              }
            }
         }//else
       }//try
@@ -220,77 +220,67 @@ Mysql password : eishoo6Pheis
       }
       $conn = null;
     }//$_post['submit']
-?>
 
-<!-- Show Files in Here :) -->
-<?php
+
+
 //Show Files in Here :)
-try{
-    $stmt = $conn->prepare("SELECT * FROM FileLee ORDER BY ID DESC");
+try {
+    $servername = "localhost";
+    $username = "epidemiaweb_test";
+    $password = "eishoo6Pheis";
+    $conn = new PDO("mysql:host=$servername;dbname=epidemia_test", $username, $password);
+    $stmt = $conn->prepare("SELECT * FROM FilesEpi ORDER BY ID DESC");
     $stmt->execute();
     $result = $stmt->fetchAll();
 }
 catch(PDOException $e) {
   echo "Error occured";
-     die($e->getMessage());
 }
 // Show File End;
 ?>
-<table>
+  <table id="keywords" cellspacing="0" cellpadding="0">
   <thead>
-    <tr>
-      <th>FileNum  </th>
-      <th>FileName  </th>
-      <th>Data</th>
+      <tr>
+        <th><span>FileName</span></th>
+        <th><span>Upload Time</span></th>
+        <th><span>Rows Uploaded</span></th>
+        <th><span>Rows in Use</span></th>
+        <th><span>Download</span></th>
+      </tr>
+  </thead>
       <tbody>
         <?php
         if(!empty($result)) {
           foreach($result as $row) {
          ?>
          <tr>
-            <td><?php echo $row["ID"]; ?>  </td>
-            <td><?php echo $row["FileName"]; ?>  </td>
+            <td class="lalign"><?php echo $row["fileName"]; ?></td>
+            <td>2017.02.27</td>
+            <td>3224</td>
+            <td>1234</td>
+            <td class="lalign"><a href=<?php $row["path"]?>>Download</td>
          </tr>
          <?php
        }
      }
      ?>
       </tbody>
-    </tr>
-  </thead>
-</table>
+  </table>
+
 
 
 <!-- File Upload  -->
-  <form enctype="multipart/form-data" action="" method="post" role="form" name="import">
+  <form enctype="multipart/form-data" method="post" name="import">
           <li><label for="exampleInputFile">File Upload</label></li>
           <input type="file" class="myButton" name="file" id="file">
           <p>Only Excel</p>
-          <!-- <a href="#" class="myButton">light grey</a> -->
       <input type="submit" class="myButton" name="submit" value="submit"/>
   </form>
-
 </body>
 </html>
+
 <!--
-추가 해야 할 것
-1. Create Table하는거 해서 넣을 때 마다 테이블 만들어서 넣도록 해야함.
-2. 디비에 받아 놓은거 다시 뿌리는 법
- -->
-<!-- // This is to upload File into DB
-CREATE TABLE IF NOT EXISTS `FileLee` (
-`ID` int(11) NOT NULL AUTO_INCREMENT,
-`FileName` VARCHAR(30) NOT NULL,
- PRIMARY KEY (`ID`) ) ;
+bin  boot  data  db  dev  etc  home  kabru  lib  lib64  media  mnt  opt  proc  root
 
-
-// This is to upload each column data into mySQL
-CREATE TABLE IF NOT EXISTS `Data` (
-`ID` int(11) NOT NULL,
-`name` VARCHAR(30) NOT NULL,
-`population` int(20) NOT NULL,
-`pop_density` int(20) NOT NULL,
-`country` VARCHAR(20) NOT NULL,
-`latitude` FLOAT(20) NOT NULL,
-`longitude` FLOAT(20) NOT NULL,
-PRIMARY KEY (`ID`) ); -->
+로그 체크하기..
+맨 아래로 내려가서 data/epidemia/test/web/logs 로 가서 vi errors.log 하면 나옴.. -->
