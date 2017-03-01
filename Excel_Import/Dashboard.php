@@ -112,7 +112,6 @@ Mysql password : eishoo6Pheis
 <html>
   <body>
 <!-- Dashboard Table -->
-  <h1>Dashboard</h1>
   <?php
     $servername = "localhost";
     $username = "epidemiaweb_test";
@@ -122,7 +121,7 @@ Mysql password : eishoo6Pheis
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       }
       catch(PDOException $e) {
-          echo "Error";
+          die( "PDO connection error ");
       }
     if(isset($_POST['submit'])) {
       try {
@@ -134,98 +133,53 @@ Mysql password : eishoo6Pheis
           $errMSG =  "Please Select Excel File";
         }
         else {
-          // echo $file_name;
-          // echo $file_tmp;
+
         if(!isset($errMSG)) {
            $handle = fopen($file_tmp,"r");
               //File Upload Start
           try {
-            $new_size = $file_size/1024;
-            $file = rand(1000,10000000)."-".$file_name;
-            $new_file_name = strtolower($file);
-            $final_file = str_replace(' ','-',$new_file_name);
-            $location = "/uploads";
-            $uploadfile = basename($_FILES['file']['name'][$key]);
+            // $target_path = $_SERVER['DOCUMENT_ROOT']. "/dashboard_test/" . basename($_FILES['file']['name']);
+            // $target_path2 = "./home/leey/" . basename($_FILES['file']['name']);
 
-            $target_path = $_SERVER['DOCUMENT_ROOT']. "/data/" . basename($_FILES['file']['name']);
-            $target_path2 = "./home/leey/" . basename($_FILES['file']['name']);
-
-            // $upload_dir = $_SERVER['DOCUMENT_ROOT']."/home/leey/data/";
-            // $upload_dir = "home/leey/data";
-            // $location = "download/";
-            // $location2 = $location . basename($_FILES["file"]["name"]);
-            // $ExcelExt = strtolower(pathinfo($file_name,PATHINFO_EXTENSION)); // get Excel Extension
-            // $valid_extensions = array('xls','csv','xlsx'); //valid extension
-            // $userExcel = rand(1000,10000000).".".$ExcelExt;
-
-            $moved = move_uploaded_file($file_tmp,$target_path);
-
-            if(!$moved) {
-              //  echo "File is valid \n";
-               $stmt = $conn->prepare("INSERT INTO FilesEpi (file, type, size, path) VALUES (:file, :type, :size, :path)");
-               $stmt->bindParam(':file', $file_name);
-               $stmt->bindParam(':type', $file_type);
-               $stmt->bindParam(':size', $new_size);
-               $stmt->bindParam(':path', $file_tmp);
-               $stmt->execute();
-             }
+            $valid_file = true;
+            if($_FILES['file']['name']) {
+              if(!$_FILES['file']['error']) {
+                $new_file_name2 = strtolower($_FILES['file']['name']);
+                if($_FILES['file']['size'] > (10240000)) {
+                  $valid_file = false;
+                  echo "File is to large";
+                }
+                if($valid_file) {
+                  $moved = move_uploaded_file($file_tmp,$_SERVER['DOCUMENT_ROOT']. "/dashboard_test/" . $new_file_name2);
+                  echo "Success!";
+                }
+              }
+              else {
+                 echo "upload triggered error: ".$_FILES['file']['error'];
+              }
+            }
             else
-               echo "Error";
-            // if($moved == 0) {
-            //   echo "File is valid \n";
-            //   $stmt = $conn->prepare("INSERT INTO FilesEpi (file, type, size, path) VALUES (:file, :type, :size, :path)");
-            //   $stmt->bindParam(':file', $final_file);
-            //   $stmt->bindParam(':type', $file_type);
-            //   $stmt->bindParam(':size', $new_size);
-            //   $stmt->bindParam(':path', $file_tmp);
-            //   // $stmt->execute();
-            //  if($stmt->execute()) {
-            //       echo "File is valid2 \n"
-            //      $successMSG = "new record succesfully inserted ...";
-            // }
-            //  else
-            //      $errMSG = "error while inserting....";
-            // }
-            // else
-            //   echo "Error";
+               echo "Error at ".$_FILES['file']['error'];
 
-
-
-
-          //   if(in_array($ExcelExt,$valid_extensions)) {
-          //       if($file_size < 50000000) {
-          //   $moved = move_uploaded_file($file_tmp,$location2);
-          //   if($moved) {
-          //     echo "Successfuly move_uploaded_file";
-          //   }
-          //   else {
-          //     echo "Not uploaded because of error #".$_FILES["file"]["error"];
-          //   }
-          // }
-          // else {
-          //   $errMSG = "Sorry, your file is too large it should be less then 50MB";
-          // }
-          //   }
-          //   else {
-          //         $errMSG = "Uploaded file is empty";
-          //   }
-            // if(!isset($errMSG))
-            // {
-            //   $stmt = $conn->prepare("INSERT INTO FilesEpi (fileName, path) VALUES ('$file_name','$location')");
-            //   $stmt->bindParam('$file_name',$file_name);
-            //
-            //  if($stmt->execute())
-            //     {
-            //      $successMSG = "new record succesfully inserted ...";
-            //     }
-            //  else
-            //    {
-            //      $errMSG = "error while inserting....";
-            //    }
-            // }//  if(!isset($errMSG))
+           if($moved) {
+              echo "File is valid ";
+              $stmt = $conn->prepare("INSERT INTO FilesEpi (file, type, size, path) VALUES (:file, :type, :size, :path)");
+              $stmt->bindParam(':file', $file_name);
+              $stmt->bindParam(':type', $file_type);
+              $stmt->bindParam(':size', $file_size);
+              $stmt->bindParam(':path', $file_tmp);
+              if($stmt->execute()) {
+                echo "Data correctly inserted to FilesEpi tables correctly";
+              }
+              else {
+                echo "FilesEpi is failed";
+              }
+            }
+            else
+               echo "Error about moved ". $_FILES['file']['error'];
           }
            catch(PDOException $e) {
-             echo "File Upload failed: ";
+             die("try catch error !! ");
            }
              //File Upload
              //Excel Data insert into MySQL
@@ -309,13 +263,13 @@ Mysql password : eishoo6Pheis
                 $conn = null;
               } //try
              catch(PDOException $e) {
-               echo "Error occured";
+               die("Error occured");
               }
            }
         }//else
       }//try
       catch(PDOException $e) {
-          echo "File Upload failed: ";
+          die("File Upload failed: ");
       }
       $conn = null;
     }//$_post['submit']
@@ -331,7 +285,7 @@ try {
     $result = $stmt->fetchAll();
 }
 catch(PDOException $e) {
-  echo "Error occured";
+  die("Error occured");
 }
 // Show File End;
 ?>
