@@ -6,24 +6,7 @@ The goal of this project is to decrease rate of illness related in mosquito.
 My Position is that develop Web App and struct Database as using RDBMS(MySQL)
 
 
-# Feb 28 Updated
-Putty 접속하는법
-ssh leey@kabru.sdstate.edu
-
-접속 비밀번호 yunhyeokLEE!
-
-mysql -u epidemiaweb_test -p epidemia_test
-
-
-Mysql password : eishoo6Pheis
-
-
-
-// 추가 해야 할 것
-// 1. Create Table하는거 해서 넣을 때 마다 테이블 만들어서 넣도록 해야함.
-// 2. 디비에 받아 놓은거 다시 뿌리는 법
-
-
+# Mar 1 Updated
  CREATE TABLE IF NOT EXISTS `FilesEpi` (
  `ID` int(11) NOT NULL AUTO_INCREMENT,
  `file` VARCHAR(30) NOT NULL,
@@ -118,3 +101,10 @@ Feb 28
 Column 1 - 64
 1 - 2 are characters
 3 - 64 are numbers
+
+
+March 1
+  해야 할것 :
+  1. Delete, Download 버튼 추가 \n
+  2. 라인 중복 검사 체크 하기! (이건 DB에 넣고 쿼리 돌리는 거보다, 여기 내에서 해결 하는 것이 더 빠르다고 Kevin이 말해줌!) \n
+  
